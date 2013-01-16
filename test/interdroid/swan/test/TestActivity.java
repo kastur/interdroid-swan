@@ -3,10 +3,18 @@ package interdroid.swan.test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import interdroid.swan.ContextTypedValueListener;
 import interdroid.swan.SwanException;
 import interdroid.swan.ContextManager;
 import interdroid.swan.R;
+import interdroid.swan.contextexpressions.Comparator;
+import interdroid.swan.contextexpressions.ComparisonExpression;
+import interdroid.swan.contextexpressions.ConstantTypedValue;
 import interdroid.swan.contextexpressions.ContextTypedValue;
+import interdroid.swan.contextexpressions.Expression;
+import interdroid.swan.contextexpressions.HistoryReductionMode;
+import interdroid.swan.contextexpressions.TimestampedValue;
+import interdroid.swan.contextexpressions.TypedValue;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -48,11 +56,24 @@ public class TestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.test);
 
-		final ContextTypedValue left = new ContextTypedValue(
-				"smart_location:vicinity?latitude=52.152962&longitude=5.367988&provider=gps");
+		//final ContextTypedValue left = new ContextTypedValue(
+		//		"smart_location:vicinity?latitude=52.152962&longitude=5.367988&provider=gps");
 		// "cuckootrain/departure_time?from_station=Amsterdam+Zuid&to_station=Amersfoort&departure_time=17:28");
+		
+		 TypedValue left = new ContextTypedValue("movement:x", HistoryReductionMode.MAX, 33);
+		 TypedValue right = new ConstantTypedValue(0.5);
+		 final Expression simpleExpression = new ComparisonExpression(left, Comparator.GREATER_THAN, right);
+		
 		final String valueName = "custom_value";
 		contextManager = new ContextManager(TestActivity.this);
+		
+		final ContextTypedValueListener listener = new ContextTypedValueListener() {
+			
+			@Override
+			public void onReading(String id, TimestampedValue[] values) {
+				LOG.debug("Got value!");
+			}
+		};
 
 		findViewById(R.id.register).setOnClickListener(
 				new View.OnClickListener() {
@@ -61,8 +82,7 @@ public class TestActivity extends Activity {
 					public void onClick(View v) {
 						LOG.debug("registering expression");
 						try {
-							contextManager.registerContextTypedValue(valueName,
-									left, null);
+							contextManager.registerContextExpression(valueName,	simpleExpression, null);
 						} catch (SwanException e) {
 							e.printStackTrace();
 						}

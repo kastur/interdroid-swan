@@ -129,6 +129,7 @@ public class ExpressionBuilderActivity extends Activity {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						currentPosition = position;
+						Log.d("Expression", expressions.get(currentPosition).toParseString());
 						findViewById(R.id.expression_finished).setEnabled(true);
 						parent.invalidate();
 					}

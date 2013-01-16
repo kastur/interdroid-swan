@@ -38,15 +38,11 @@
             android:name=".test.TestActivity"
             android:screenOrientation="portrait" >
             <intent-filter >
-
-                <!--
-                <action android:name="android.intent.action.MAIN" >
-                </action>
-
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                -->
             </intent-filter>
         </activity>
+
         <activity
             android:label="Expression Builder"
             android:name=".ui.ExpressionBuilderActivity"
@@ -123,18 +119,16 @@
             android:theme="@android:style/Theme.Dialog" >
         </activity>
 
-        <!--
+
              <activity android:label="Swan Monitor" android:name=".servicemonitor.ServiceMonitor">
 			<intent-filter> <action android:name="android.intent.action.MAIN"></action>
 			<category android:name="android.intent.category.LAUNCHER" /> </intent-filter>
 			</activity>
-        -->
 
-
-        <!--
-             <activity android:label="Expression Monitor" android:name=".servicemonitor.ExpressionMonitor"
+      <activity android:label="Expression Monitor" android:name=".servicemonitor.ExpressionMonitor"
 			/>
-        -->
+
+
         <activity android:name=".sensors.impl.SmartLocationSensor$ConfigurationActivity" >
         </activity>
         <activity android:name=".sensors.impl.GyroscopeSensor$ConfigurationActivity" >
@@ -525,7 +519,6 @@
         <provider
             android:authorities="interdroid.context.sensor.location"
             android:name="interdroid.swan.sensors.impl.LocationSensor$Provider" />
-
         <service
             android:exported="true"
             android:name=".sensors.impl.SmartLocationSensor"
@@ -562,11 +555,9 @@
 
         <receiver android:name=".sensors.impl.SmartLocationSensor$AlarmReceiver" >
         </receiver>
-
         <provider
             android:authorities="interdroid.context.sensor.smartlocation"
             android:name="interdroid.swan.sensors.impl.SmartLocationSensor$Provider" />
-
         <service
             android:exported="true"
             android:name=".sensors.impl.CallSensor"
