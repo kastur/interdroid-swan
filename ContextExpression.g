@@ -182,6 +182,12 @@ typed_value	returns [TypedValue typed_value]
 			{$typed_value = context /*.typed_value */ ;}
 	;
 
+conditionalExpression returns [Expression expression]
+  : IF WS* condExpr=parentheticalExpression WS* THEN
+       WS* trueExpr=parentheticalExpression WS* ELSE
+       WS* falseExpr=parentheticalExpression WS* END
+      { $expression = new ConditionalExpression(condExpr, trueExpr, falseExpr); };
+
 parentheticalExpression returns [Expression expression]
 	:	val=typed_value 
 			{$expression = new TypedValueExpression(val /* .typed_value */ );}
@@ -322,6 +328,11 @@ time_value returns [Long time]
 	;
 
 // Lexar rules
+
+IF : 'if';
+THEN : 'then';
+ELSE : 'else';
+END : 'end';
 
 TIME_UNIT 
 	:	'h'|'H'|'m'|'M'|'s'|'S'|'ms';
