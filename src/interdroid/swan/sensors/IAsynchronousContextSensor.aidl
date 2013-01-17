@@ -9,6 +9,8 @@ interface IAsynchronousContextSensor {
 	void unregister(in String id);
 
 	List<TimestampedValue> getValues(in String id, long now, long timespan);
+	
+	void sendPullRequest(in String id, long start, long period, long windowSize, long nextDL);
 
 	String getScheme();
 }

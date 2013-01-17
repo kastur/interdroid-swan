@@ -121,5 +121,9 @@ public abstract class AbstractMemorySensor extends AbstractSensorBase {
 		return getValuesForTimeSpan(values.get(registeredValuePaths.get(id)),
 				now, timespan);
 	}
+	
+	public final List<TimestampedValue> getValues(final String id, final long start, final long end, final long period) {
+		return getValuesForTimeSpan(values.get(registeredValuePaths.get(id)), end, start);
+	}
 
 }

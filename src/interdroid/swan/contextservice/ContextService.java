@@ -84,6 +84,7 @@ public class ContextService extends Service {
 
 	/** The notification. */
 	private Notification notification;
+	
 
 	/** The context expressions, mapped by id. */
 	private final HashMap<String, Expression> contextExpressions = new HashMap<String, Expression>() {

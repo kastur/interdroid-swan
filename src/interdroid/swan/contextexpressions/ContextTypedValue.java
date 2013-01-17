@@ -6,6 +6,7 @@ import interdroid.swan.contextservice.SensorManager;
 import interdroid.swan.contextservice.SensorSetupFailedException;
 import interdroid.swan.sensors.IAsynchronousContextSensor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -56,6 +57,9 @@ public class ContextTypedValue extends TypedValue {
 
 	/** The default history length to keep. 1 second. */
 	public static final int DEFAULT_HISTORY_LENGTH = 1000;
+	
+	public static final String PARAMETER_PERIOD = "PERIOD";
+	public static final String PARAMETER_WINDOWSIZE = "WINDOWSIZE";
 
 	/**
 	 * ID within the expression.
@@ -81,6 +85,16 @@ public class ContextTypedValue extends TypedValue {
 	 * The timespan to consider.
 	 */
 	private long mTimespan;
+	
+	/**
+	 * Period of data collection
+	 */
+	private long period = 5;
+	
+	/**
+	 * WindowSize of data collection, in terms of seconds
+	 */
+	private long windowSize = 1;
 
 	/**
 	 * Did we fail to register with the sensor?
@@ -312,6 +326,7 @@ public class ContextTypedValue extends TypedValue {
 	@Override
 	public final TimestampedValue[] getValues(final String id, final long now)
 			throws SwanException {
+		
 		if (mSensor == null) {
 			// wait a little and try again, otherwise throw exception
 			try {
@@ -328,9 +343,13 @@ public class ContextTypedValue extends TypedValue {
 			throw new SwanException("Failed to register " + toString()
 					+ " to sensor");
 		}
-		List<TimestampedValue> values;
+		List<TimestampedValue> values = new ArrayList<TimestampedValue>();
 		try {
-			values = mSensor.getValues(id, now, mTimespan);
+			//values = mSensor.getValues(id, now, mTimespan);
+			//values = mSensor.getValues(id, now, mTimespan, period, windowSize, nextDL);
+			long start = System.currentTimeMillis();
+			long nextDL = start + 20;
+			mSensor.sendPullRequest(id, start, period, windowSize, nextDL);
 		} catch (RemoteException e) {
 			throw new SwanException(e);
 		}
@@ -409,6 +428,10 @@ public class ContextTypedValue extends TypedValue {
 				IAsynchronousContextSensor sensor = IAsynchronousContextSensor.Stub
 						.asInterface(service);
 				try {
+//					/* Pass period and window size */
+//					mConfiguration.putLong(PARAMETER_PERIOD, period);
+//					mConfiguration.putLong(PARAMETER_WINDOWSIZE, windowSize);
+					
 					sensor.register(id, mValuePath, mConfiguration);
 					mRegistrationFailed = false;
 				} catch (RemoteException e) {

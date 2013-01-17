@@ -46,6 +46,16 @@ public interface SensorInterface {
 	 */
 	List<TimestampedValue> getValues(String id, long now,
 			long timespan);
+	
+	/**
+	 * send request to pull data
+	 * @param id
+	 * @param start
+	 * @param period
+	 * @param windowSize
+	 * @param nextDL
+	 */
+	void sendPullRequest(String id, long start, long period, long windowSize, long nextDL);
 
 	/**
 	 * @return the value paths this sensor puts out

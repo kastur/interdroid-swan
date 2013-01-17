@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 /**
  * This class is the abstract base for all Sensor services. Sensor implementors
@@ -75,6 +77,42 @@ public abstract class AbstractSensorBase extends Service implements
 		}
 		return result;
 	}
+	
+	/**
+	 * Get all reading, given start time and end time
+	 * @param values
+	 * @param start
+	 * @param end
+	 * @param period
+	 * @return
+	 */
+	protected static final List<TimestampedValue> getValuesForTimeSpan(
+			final List<TimestampedValue> values, final long start,
+			final long end, final long period) {
+		List<TimestampedValue> result = new ArrayList<TimestampedValue>();
+		int startPos = 0;
+		int endPos = values.size() - 1;;
+		if (values != null) {
+			result.addAll(values);
+			for (int i = 0; i < values.size(); i++) {
+				if (start > values.get(i).getTimestamp()) {
+					startPos++;
+				}
+				else {
+					break;
+				}
+			}
+			for (int i = values.size() - 1; i >= 0; i--) {
+				if (endPos < values.get(i).getTimestamp()) {
+					endPos--;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		return result.subList(startPos, endPos);
+	}
 
 	/**
 	 * The sensor interface.
@@ -115,6 +153,11 @@ public abstract class AbstractSensorBase extends Service implements
 
 	/** Access to the sensor service to send notifications. */
 	protected SensorContextServiceConnector contextServiceConnector;
+	
+	/**
+	 *  The queue for all data pull requests.
+	 */
+	protected PriorityQueue<DataRequest> queue = new PriorityQueue<DataRequest>();
 
 	// CHECKSTYLE:ON
 
@@ -250,6 +293,12 @@ public abstract class AbstractSensorBase extends Service implements
 			return mSensorInterface.getScheme();
 		}
 
+		@Override
+		public void sendPullRequest(String id, long start, long period,
+				long windowSize, long nextDL) throws RemoteException {
+			mSensorInterface.sendPullRequest(id, start, period, windowSize, nextDL);
+		}
+
 	};
 
 	/**
@@ -361,5 +410,30 @@ public abstract class AbstractSensorBase extends Service implements
 			contextServiceConnector.notifyDataChanged(notify
 					.toArray(new String[notify.size()]));
 		}
+	}
+	
+	/**
+	 * Send a pull request to the sensor for data
+	 */
+	public void sendPullRequest(String id, long start, long period, long windowSize, long nextDL) {
+		Log.i("AbstractSensorBase", start + " " + period + " " + windowSize + " " + nextDL);
+		long startTime = start + ((nextDL - start) / period - 1) * period;
+		long endTime = -1;
+		while (startTime + windowSize >= nextDL) {
+			startTime -= period;
+		}
+		if (startTime > System.currentTimeMillis()) {
+			endTime = startTime + windowSize;
+		}
+		else {
+			Log.i("AbstractSensorBase", "Error, no enough time to collect data");
+		}
+		
+		DataRequest req = new DataRequest(startTime, endTime);
+		Log.i("AbstractSensorBase", startTime + " " + endTime);
+		this.queue.add(req);
+		
+		// return data
+		
 	}
 }
