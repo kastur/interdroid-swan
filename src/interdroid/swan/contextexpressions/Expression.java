@@ -52,11 +52,17 @@ public abstract class Expression implements Parseable<Expression>, Parcelable,
 	 * Subtype ID for a Comparison Expression.
 	 */
 	protected static final int COMPARISON_EXPRESSION_TYPE = 3;
+	
 
 	/**
 	 * Subtype ID for a Typed Value Expression.
 	 */
 	protected static final int TYPED_VALUE_EXPRESSION_TYPE = 4;
+	
+	/**
+	 * Subtype ID for a Conditional Expression.
+	 */
+	protected static final int CONDITION_EXPRESSION_TYPE = 5;
 
 	/**
 	 * Time until we need to reevaluate this expression.
@@ -123,6 +129,9 @@ public abstract class Expression implements Parseable<Expression>, Parcelable,
 				break;
 			case TYPED_VALUE_EXPRESSION_TYPE:
 				result = new TypedValueExpression(in);
+				break;
+			case CONDITION_EXPRESSION_TYPE:
+				result = new ConditionalExpression(in);
 				break;
 			default:
 				throw new RuntimeException("Unknown subtype: " + type);
