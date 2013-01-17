@@ -185,7 +185,9 @@
         <service
             android:exported="true"
             android:name=".contextservice.ContextService"
-            android:process=":contextservice" >
+            android:process=":contextservice"
+             >
+			<!--   -->
             <intent-filter >
                 <action android:name="interdroid.swan.intent.CONTEXTSERVICE" />
             </intent-filter>
