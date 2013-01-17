@@ -43,6 +43,7 @@ public class ConditionalExpression extends Expression {
 	 */
 	private SensorManager mSensorManager;
 
+
 	public ConditionalExpression(final Expression condition,
 			final Expression trueExpression, final Expression falseExpression) {
 		this.mConditionExpression = condition;
@@ -55,9 +56,7 @@ public class ConditionalExpression extends Expression {
 	protected ConditionalExpression(final Parcel in) {
 		super(in);
 		mConditionExpression = in.readParcelable(getClass().getClassLoader());
-		int unused = in.readInt();
 		mTrueExpression = in.readParcelable(getClass().getClassLoader());
-		int unused_2 = in.readInt();
 		mFalseExpression = in.readParcelable(getClass().getClassLoader());
 	}
 
@@ -134,9 +133,7 @@ public class ConditionalExpression extends Expression {
 	@Override
 	protected final void writeToParcelImpl(final Parcel dest, final int flags) {
 		dest.writeParcelable(mConditionExpression, flags);
-		dest.writeInt(10);
 		dest.writeParcelable(mTrueExpression, flags);
-		dest.writeInt(12);
 		dest.writeParcelable(mFalseExpression, flags);
 	}
 
