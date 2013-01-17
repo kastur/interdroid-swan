@@ -72,11 +72,12 @@ public class MovementSensor extends AbstractMemorySensor {
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 				for (int i = 0; i < 3; i++) {
 					putValueTrimSize(VALUE_PATHS[i], null, now, (double) event.values[i], HISTORY_SIZE);
+					Log.i("Acc Data", i + " " + (double) event.values[i]);
 				}
-//				double len2 = (double) Math.sqrt(event.values[0]
-//						* event.values[0] + event.values[1] * event.values[1]
-//						+ event.values[2] * event.values[2]);
-//				putValueTrimSize(TOTAL_FIELD, null, now, len2, HISTORY_SIZE);
+				double len2 = (double) Math.sqrt(event.values[0]
+						* event.values[0] + event.values[1] * event.values[1]
+						+ event.values[2] * event.values[2]);
+				putValueTrimSize(TOTAL_FIELD, null, now, len2, HISTORY_SIZE);
 			}
 		}
 	};
@@ -176,36 +177,36 @@ public class MovementSensor extends AbstractMemorySensor {
 
 	@Override
 	public final void register(String id, String valuePath, Bundle configuration) {
-//		updateAccuracy();
+		updateAccuracy();
 	}
 
 	private void updateAccuracy() {
-//		sensorManager.unregisterListener(sensorEventListener);
-//		if (registeredConfigurations.size() > 0) {
-//
-//			int highestAccuracy = mDefaultConfiguration.getInt(ACCURACY);
-//			for (Bundle configuration : registeredConfigurations.values()) {
-//				if (configuration == null) {
-//					continue;
-//				}
-//				if (configuration.containsKey(ACCURACY)) {
-//					highestAccuracy = Math
-//							.min(highestAccuracy,
-//									Integer.parseInt(configuration
-//											.getString(ACCURACY)));
-//				}
-//			}
-//			highestAccuracy = Math.max(highestAccuracy,
-//					SensorManager.SENSOR_DELAY_FASTEST);
-//			sensorManager.registerListener(sensorEventListener, accelerometer,
-//					highestAccuracy);
-//		}
+		sensorManager.unregisterListener(sensorEventListener);
+		if (registeredConfigurations.size() > 0) {
+
+			int highestAccuracy = mDefaultConfiguration.getInt(ACCURACY);
+			for (Bundle configuration : registeredConfigurations.values()) {
+				if (configuration == null) {
+					continue;
+				}
+				if (configuration.containsKey(ACCURACY)) {
+					highestAccuracy = Math
+							.min(highestAccuracy,
+									Integer.parseInt(configuration
+											.getString(ACCURACY)));
+				}
+			}
+			highestAccuracy = Math.max(highestAccuracy,
+					SensorManager.SENSOR_DELAY_FASTEST);
+			sensorManager.registerListener(sensorEventListener, accelerometer,
+					highestAccuracy);
+		}
 
 	}
 
 	@Override
 	public final void unregister(String id) {
-//		updateAccuracy();
+		updateAccuracy();
 	}
 
 	@Override

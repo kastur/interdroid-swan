@@ -345,11 +345,11 @@ public class ContextTypedValue extends TypedValue {
 		}
 		List<TimestampedValue> values = new ArrayList<TimestampedValue>();
 		try {
-			//values = mSensor.getValues(id, now, mTimespan);
+			values = mSensor.getValues(id, now, mTimespan);
 			//values = mSensor.getValues(id, now, mTimespan, period, windowSize, nextDL);
-			long start = System.currentTimeMillis();
-			long nextDL = start + 20;
-			mSensor.sendPullRequest(id, start, period, windowSize, nextDL);
+//			long start = System.currentTimeMillis();
+//			long nextDL = start + 20;
+//			mSensor.sendPullRequest(id, start, period, windowSize, nextDL);
 		} catch (RemoteException e) {
 			throw new SwanException(e);
 		}
